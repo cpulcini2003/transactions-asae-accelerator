@@ -90,13 +90,11 @@ engine:
             pattern: "(?<startOfDependencies><dependencies>)(?<existingDependencies>(?![\\s\\S]+<groupId>org.postgresql</groupId>\\s*<artifactId>postgresql</artifactId>[\\s\\S]+</dependencies>))"
             with: |
               '${startOfDependencies}
-                      <dependency>
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <scope>runtime</scope>
-                      </dependency>${existingDependencies}'
-
-
+                  <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <scope>runtime</scope>
+                  </dependency>${existingDependencies}'
   - condition: "#enableAppConfigService == true"
     merge:
     - include: ['**']
@@ -107,7 +105,13 @@ engine:
           substitutions:
             - text: "app-name"
               with: "#workloadResourceName"
-    - include: ['transactions.yaml']
+    - include: ['src/main/resources/application.properties']
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "##spring.application.name:"
+              with: "'spring.application.name: ' + #workloadResourceName"
+    - include: ["#workloadResourceName + '.yaml'"]
       chain:
         - type: ReplaceText
           substitutions:
@@ -130,9 +134,9 @@ engine:
             pattern: "(?<startOfDependencies><dependencies>)(?<existingDependencies>(?![\\s\\S]+<groupId>org.postgresql</groupId>\\s*<artifactId>postgresql</artifactId>[\\s\\S]+</dependencies>))"
             with: |
               '${startOfDependencies}
-                      <dependency>
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <scope>runtime</scope>
-                      </dependency>${existingDependencies}'
+                  <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <scope>runtime</scope>
+                  </dependency>${existingDependencies}'
               
