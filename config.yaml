@@ -1,7 +1,7 @@
 spring:
   application:
-    name: transactions
+    name: APP_NAME
   profiles:
-    active: prod-new
+    active: PROFILE_NAME
 
 ##DB_PARAMS

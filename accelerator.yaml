@@ -73,8 +73,6 @@ engine:
       chain:
         - type: ReplaceText
           substitutions:
-            - text: "##spring.application.name:"
-              with: "'spring.application.name: ' + #workloadResourceName"
             - text: "##DB_PARAMS"
               with:  |
                 'spring.datasource.url=jdbc:h2:mem:testdb
@@ -127,6 +125,12 @@ engine:
                 h2:
                   console:
                     enabled: true'
+        - type: ReplaceText
+          substitutions:
+            - text: "APP_NAME"
+              with: "#workloadResourceName + 'app_name'"
+            - text: "PROFILE_NAME"
+              with: "development"
         - type: RewritePath
           regex: (.*)config.yaml(.*)
           rewriteTo: "#workloadResourceName + '.yaml'"
