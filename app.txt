@@ -127,6 +127,7 @@ engine:
                 h2:
                   console:
                     enabled: true'
+                      chain:
     - include: [ "pom.xml" ]
       chain:
         - type: ReplaceText
