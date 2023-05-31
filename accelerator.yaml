@@ -127,6 +127,9 @@ engine:
                 h2:
                   console:
                     enabled: true'
+        - type: RewritePath
+          regex: (.*)transactions.yaml(.*)
+          rewriteTo: "#workloadResourceName + '.yaml'"
     - include: [ "pom.xml" ]
       chain:
         - type: ReplaceText
