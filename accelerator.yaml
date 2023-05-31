@@ -113,6 +113,8 @@ engine:
       chain:
         - type: ReplaceText
           substitutions:
+            - text: "APP_NAME"
+              with: "PROVA"
             - text: "##DB_PARAMS"
               with:  |
                 'datasource:
@@ -125,8 +127,6 @@ engine:
                 h2:
                   console:
                     enabled: true'
-            - text: "APP_NAME"
-              with: "PROVA"
         - type: RewritePath
           regex: (.*)config.yaml(.*)
           rewriteTo: "#workloadResourceName + '.yaml'"
