@@ -98,7 +98,7 @@ engine:
   - condition: "#enableAppConfigService == true"
     merge:
     - include: ['**']
-      exclude: ['README.md', 'src/main/resources/application.properties']
+      exclude: ['README.md', 'src/main/resources/application.properties', 'config.yaml']
     - include: ['README.md']
       chain:
         - type: ReplaceText
@@ -111,7 +111,7 @@ engine:
           substitutions:
             - text: "##spring.application.name:"
               with: "'spring.application.name: ' + #workloadResourceName"
-    - include: ["transactions.yaml"]
+    - include: ["config.yaml"]
       chain:
         - type: ReplaceText
           substitutions:
@@ -128,9 +128,8 @@ engine:
                   console:
                     enabled: true'
         - type: RewritePath
-          regex: (.*)transactions.yaml(.*)
+          regex: (.*)config.yaml(.*)
           rewriteTo: "#workloadResourceName + '.yaml'"
-    - exclude: ["transactions.yaml"]
     - include: [ "pom.xml" ]
       chain:
         - type: ReplaceText
