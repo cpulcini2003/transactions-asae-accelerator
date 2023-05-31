@@ -36,5 +36,5 @@ engine:
       chain:
         - type: ReplaceText
           substitutions:
-            - text: "spring.application.name:"
+            - text: "##spring.application.name:"
               with: "#workloadResourceName"
