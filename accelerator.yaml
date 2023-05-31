@@ -58,12 +58,11 @@ engine:
     - name: workloadResourceName
       expression: '#artifactId.toLowerCase()'
   chain:
-
-
+  # Test if CONFIG SERVER whas selected 
   - condition: "!#enableAppConfigService"
     merge:
     - include: ['**']
-      exclude: ['README.md', 'src/main/resources/application.properties']
+      exclude: ['README.md', 'src/main/resources/application.properties', 'pom.xml']
     - include: ['README.md']
       chain:
         - type: ReplaceText
@@ -84,6 +83,20 @@ engine:
                 spring.datasource.password=password
                 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
                 spring.h2.console.enabled=true'
+    - include: [ "pom.xml" ]
+      chain:
+        - type: ReplaceText
+          regex:
+            pattern: "(?<startOfDependencies><dependencies>)(?<existingDependencies>(?![\\s\\S]+<groupId>org.postgresql</groupId>\\s*<artifactId>postgresql</artifactId>[\\s\\S]+</dependencies>))"
+            with: |
+              '${startOfDependencies}
+                      <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <scope>runtime</scope>
+                      </dependency>${existingDependencies}'
+
+
   - condition: "#enableAppConfigService == true"
     merge:
     - include: ['**']
@@ -110,4 +123,17 @@ engine:
                 h2:
                   console:
                     enabled: true'
+                        - include: [ "pom.xml" ]
+    - include: [ "pom.xml" ]
+      chain:
+        - type: ReplaceText
+          regex:
+            pattern: "(?<startOfDependencies><dependencies>)(?<existingDependencies>(?![\\s\\S]+<groupId>org.postgresql</groupId>\\s*<artifactId>postgresql</artifactId>[\\s\\S]+</dependencies>))"
+            with: |
+              '${startOfDependencies}
+                      <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <scope>runtime</scope>
+                      </dependency>${existingDependencies}'
               
