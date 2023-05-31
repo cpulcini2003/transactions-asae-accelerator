@@ -111,7 +111,7 @@ engine:
           substitutions:
             - text: "##spring.application.name:"
               with: "'spring.application.name: ' + #workloadResourceName"
-    - include: ["TEMP_CONFIG.yaml"]
+    - include: ["transactions.yaml"]
       chain:
         - type: ReplaceText
           substitutions:
@@ -128,9 +128,6 @@ engine:
                   console:
                     enabled: true'
                       chain:
-        - type: RewritePath
-          regex: (.*)TEMP_CONFIG.YAML(.*)
-          rewriteTo: "#workloadResourceName + '.yaml'"
     - include: [ "pom.xml" ]
       chain:
         - type: ReplaceText
