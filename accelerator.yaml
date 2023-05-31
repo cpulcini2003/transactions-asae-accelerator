@@ -125,6 +125,8 @@ engine:
                 h2:
                   console:
                     enabled: true'
+            - text: "APP_NAME"
+              with: "PROVA"
         - type: RewritePath
           regex: (.*)config.yaml(.*)
           rewriteTo: "#workloadResourceName + '.yaml'"
