@@ -58,7 +58,10 @@ engine:
     - name: workloadResourceName
       expression: '#artifactId.toLowerCase()'
   chain:
-  - merge:
+
+
+  - condition: "!#enableAppConfigService"
+    merge:
     - include: ['**']
       exclude: ['README.md', 'src/main/resources/application.properties']
     - include: ['README.md']
@@ -67,39 +70,44 @@ engine:
           substitutions:
             - text: "app-name"
               with: "#workloadResourceName"
-
-  - condition: "!#enableAppConfigService"
-    merge:
-      - include: ['src/main/resources/application.properties']
-        chain:
-          - type: ReplaceText
-            substitutions:
-              - text: "##spring.application.name:"
-                with: "'spring.application.name: ' + #workloadResourceName"
-              - text: "##DB_PARAMS"
-                with:  |
-                  'spring.datasource.url=jdbc:h2:mem:testdb
-                  spring.datasource.driverClassName=org.h2.Driver
-                  spring.datasource.username=sa
-                  spring.datasource.password=password
-                  spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-                  spring.h2.console.enabled=true'
+    - include: ['src/main/resources/application.properties']
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "##spring.application.name:"
+              with: "'spring.application.name: ' + #workloadResourceName"
+            - text: "##DB_PARAMS"
+              with:  |
+                'spring.datasource.url=jdbc:h2:mem:testdb
+                spring.datasource.driverClassName=org.h2.Driver
+                spring.datasource.username=sa
+                spring.datasource.password=password
+                spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+                spring.h2.console.enabled=true'
   - condition: "#enableAppConfigService == true"
     merge:
-      - include: ['transactions.yaml']
-        chain:
-          - type: ReplaceText
-            substitutions:
-              - text: "##DB_PARAMS"
-                with:  |
-                  'datasource:
-                    url: jdbc:h2:mem:testdb
-                    driverClassName: org.h2.Driver
-                    username: sa
-                    password: password
-                  jpa:
-                    database-platform: org.hibernate.dialect.H2Dialect
-                  h2:
-                    console:
-                      enabled: true'
+    - include: ['**']
+      exclude: ['README.md', 'src/main/resources/application.properties']
+    - include: ['README.md']
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "app-name"
+              with: "#workloadResourceName"
+    - include: ['transactions.yaml']
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "##DB_PARAMS"
+              with:  |
+                'datasource:
+                  url: jdbc:h2:mem:testdb
+                  driverClassName: org.h2.Driver
+                  username: sa
+                  password: password
+                jpa:
+                  database-platform: org.hibernate.dialect.H2Dialect
+                h2:
+                  console:
+                    enabled: true'
               
