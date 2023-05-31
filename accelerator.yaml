@@ -125,10 +125,6 @@ engine:
                 h2:
                   console:
                     enabled: true'
-            - text: "APP_NAME"
-              with: "#workloadResourceName + 'app_name'"
-            - text: "PROFILE_NAME"
-              with: "development"
         - type: RewritePath
           regex: (.*)config.yaml(.*)
           rewriteTo: "#workloadResourceName + '.yaml'"
