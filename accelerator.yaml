@@ -38,4 +38,4 @@ engine:
         - type: ReplaceText
           substitutions:
             - text: "##spring.application.name:"
-              with: "#workloadResourceName"
+              with: "'spring.application.name: ' + #workloadResourceName"
