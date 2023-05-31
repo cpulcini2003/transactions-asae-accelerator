@@ -123,7 +123,6 @@ engine:
                 h2:
                   console:
                     enabled: true'
-                        - include: [ "pom.xml" ]
     - include: [ "pom.xml" ]
       chain:
         - type: ReplaceText
