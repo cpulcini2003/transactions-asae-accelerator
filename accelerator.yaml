@@ -111,7 +111,10 @@ engine:
           substitutions:
             - text: "##spring.application.name:"
               with: "'spring.application.name: ' + #workloadResourceName"
+
     - include: ["#workloadResourceName + '.yaml'"]
+
+    - include: ["transactions.yaml"]
       chain:
         - type: ReplaceText
           substitutions:
