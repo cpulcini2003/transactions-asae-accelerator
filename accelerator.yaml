@@ -8,6 +8,7 @@ accelerator:
     - MoneyApp
     - PostgreSQL
     - H2
+    - CPu
 
   # Place this after the 'tags' section from the previous step
   options:
