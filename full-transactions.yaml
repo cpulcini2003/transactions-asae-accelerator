@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: transactions
+  profiles:
+    active: prod-new
+  # datasource:
+  #   url: jdbc:postgresql://transaction-db.postgres.database.azure.com:5432/transactions
+  #   username: postgres@transaction-db.postgres.database.azure.com
+  #   password: psg1vmware1!
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true

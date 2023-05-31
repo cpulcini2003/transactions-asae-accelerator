@@ -18,6 +18,40 @@ accelerator:
       label: Module artifact name
       required: true
 
+    # CONFIG SERVICE SECTION
+    - name: enableAppConfigService
+      description: "If set to true, application will be configured to use Application Configuration Service for external configuration"
+      label: Enable Application Configuration Service?
+      dataType: boolean
+      defaultValue: false
+      inputType: checkbox
+      required: true
+    - name: acsRepoUri
+      description: "Git Repository URI containing external configuration"
+      inputType: text
+      label: Git Repository URI
+      required: true
+      defaultValue: "https://git-server/app-config-repo"
+      dependsOn:
+        name: enableAppConfigService
+    - name: acsRepoLabel
+      description: "Git Repository Branch name containing external configuration"
+      label: Git Repository Label
+      datatype: text
+      defaultValue: main
+      required: true
+      dependsOn:
+        name: enableAppConfigService
+    - name: acsRepoPattern
+      description: "Pattern used to search in Git repositories. For each pattern, use format like {application} or {application}/{profile} instead of {application}-{profile}.yml, and separate them by a comma."
+      label: Application Configuration Pattern
+      datatype: text
+      defaultValue: "application/default"
+      required: true
+      dependsOn:
+        name: enableAppConfigService
+    # END CONFIG SERVICE SECTION
+
 # Place this after the `options` section from the previous step
 engine:
   let:
@@ -33,19 +67,39 @@ engine:
           substitutions:
             - text: "app-name"
               with: "#workloadResourceName"
-    - include: ['src/main/resources/application.properties']
-      chain:
-        - type: ReplaceText
-          substitutions:
-            - text: "##spring.application.name:"
-              with: "'spring.application.name: ' + #workloadResourceName"
-            - text: "##H2_PARAMS"
-              with:  |
-                'spring.datasource.url=jdbc:h2:mem:testdb
-                spring.datasource.driverClassName=org.h2.Driver
-                spring.datasource.username=sa
-                spring.datasource.password=password
-                spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-                spring.h2.console.enabled=true'
-              
+
+  - condition: "!#enableAppConfigService"
+    merge:
+      - include: ['src/main/resources/application.properties']
+        chain:
+          - type: ReplaceText
+            substitutions:
+              - text: "##spring.application.name:"
+                with: "'spring.application.name: ' + #workloadResourceName"
+              - text: "##DB_PARAMS"
+                with:  |
+                  'spring.datasource.url=jdbc:h2:mem:testdb
+                  spring.datasource.driverClassName=org.h2.Driver
+                  spring.datasource.username=sa
+                  spring.datasource.password=password
+                  spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+                  spring.h2.console.enabled=true'
+  - condition: "#enableAppConfigService == true"
+    merge:
+      - include: ['transactions.yaml']
+        chain:
+          - type: ReplaceText
+            substitutions:
+              - text: "##DB_PARAMS"
+                with:  |
+                  'datasource:
+                    url: jdbc:h2:mem:testdb
+                    driverClassName: org.h2.Driver
+                    username: sa
+                    password: password
+                  jpa:
+                    database-platform: org.hibernate.dialect.H2Dialect
+                  h2:
+                    console:
+                      enabled: true'
               
