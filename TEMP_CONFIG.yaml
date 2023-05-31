@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: transactions
+  profiles:
+    active: prod-new
+
+##DB_PARAMS
