@@ -1,0 +1,40 @@
+accelerator:
+  displayName: Transactions Accelerator
+  description: Transactions Spring Restful API supported by in memory H2 or persistent PostgreSQL database.
+  iconUrl: https://blogs.vmware.com/wp-content/uploads/2022/02/tap.png
+  tags:
+    - Spring
+    - Transactions
+    - MoneyApp
+    - PostgreSQL
+    - H2
+
+  # Place this after the 'tags' section from the previous step
+  options:
+    - name: artifactId
+      inputType: text
+      defaultValue: "transactions-profile"
+      label: Module artifact name
+      required: true
+
+# Place this after the `options` section from the previous step
+engine:
+  let:
+    - name: workloadResourceName
+      expression: '#artifactId.toLowerCase()'
+  chain:
+  - merge:
+    - include: ['**']
+      exclude: ['README.md', 'src/main/resources/application.properties']
+    - include: ['README.md']
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "app-name"
+              with: "#workloadResourceName"
+    - include: ['src/main/resources/application.properties']
+      chain:
+        - type: ReplaceText
+          substitutions:
+            - text: "spring.application.name:"
+              with: "#workloadResourceName"

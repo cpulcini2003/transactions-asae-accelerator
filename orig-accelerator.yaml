@@ -1,0 +1,106 @@
+accelerator:
+  displayName: Transactions Accelerator
+  description: Transactions Spring Restful API supported by in memory H2 or persistent PostgreSQL database.
+  iconUrl: https://blogs.vmware.com/wp-content/uploads/2022/02/tap.png
+  tags:
+    - Spring
+    - Transactions
+    - MoneyApp
+    - PostgreSQL
+    - H2
+
+  # Place this after the 'tags' section from the previous step
+  options:
+    - name: artifactId
+      inputType: text
+      defaultValue: "transactions-profile"
+      label: Module artifact name
+      required: true
+
+    - name: enableAppConfigService
+      description: "If set to true, application will be configured to use Application Configuration Service for external configuration"
+      label: Enable Application Configuration Service?
+      dataType: boolean
+      defaultValue: false
+      inputType: checkbox
+      required: true
+    - name: acsRepoUri
+      description: "Git Repository URI containing external configuration"
+      inputType: text
+      label: Git Repository URI
+      required: true
+      defaultValue: "https://git-server/app-config-repo"
+      dependsOn:
+        name: enableAppConfigService
+    - name: acsRepoLabel
+      description: "Git Repository Branch name containing external configuration"
+      label: Git Repository Label
+      datatype: text
+      defaultValue: main
+      required: true
+      dependsOn:
+        name: enableAppConfigService
+    - name: acsRepoPattern
+      description: "Pattern used to search in Git repositories. For each pattern, use format like {application} or {application}/{profile} instead of {application}-{profile}.yml, and separate them by a comma."
+      label: Application Configuration Pattern
+      datatype: text
+      defaultValue: "application/default"
+      required: true
+      dependsOn:
+        name: enableAppConfigService
+
+# Place this after the `options` section from the previous step
+engine:
+  let:
+    - name: workloadResourceName
+      expression: '#artifactId.toLowerCase()'
+  chain:
+    # ACS is enabled
+    - condition: "#enableAppConfigService == true"
+      merge:
+        - include: ['**']
+          exclude: ['README.md']
+        - include: ['README.md']
+          condition: "#enableAppConfigService"
+          chain:
+            - type: ReplaceText
+              substitutions:
+                - text: "acs-repo-uri"
+                  with: "#acsRepoUri"
+                - text: "acs-repo-label"
+                  with: "#acsRepoLabel"
+                - text: "acs-repo-pattern"
+                  with: "#acsRepoPattern"
+                - text: "app-config-name"
+                  with: "#artifactId.toLowerCase() + '-config'"
+            # - type: ReplaceText
+            #   regex:
+            #       pattern: "--- StartACS\\s|--- EndACS\\s"
+            #       with: "''"
+
+    - condition: "!#enableAppConfigService"
+      merge:
+        - include: ['**']
+          exclude: ['README.md']
+        - include: ['README.md']
+          chain:
+            - type: ReplaceText
+              regex:
+                  pattern: "--- StartACS[\\s\\S]+?--- EndACS"
+                  with: "''"
+    # end of ACS specific part
+    - merge:
+      - include: ['**']
+        exclude: ['README.md']
+      - include: ['README.md']
+        chain:
+          - type: ReplaceText
+            substitutions:
+              - text: "app-name"
+                with: "#workloadResourceName"
+      - include: ['src/main/reources/application.properties']
+        chain:
+          - type: ReplaceText
+            substitutions:
+              - text: "app-config-name"
+                with: "#artifactId.toLowerCase() + '-config'"
