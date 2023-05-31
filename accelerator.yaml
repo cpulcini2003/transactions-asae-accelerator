@@ -125,8 +125,6 @@ engine:
                 h2:
                   console:
                     enabled: true'
-        - type: ReplaceText
-          substitutions:
             - text: "APP_NAME"
               with: "#workloadResourceName + 'app_name'"
             - text: "PROFILE_NAME"
