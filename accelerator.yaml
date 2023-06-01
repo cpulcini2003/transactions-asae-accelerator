@@ -114,7 +114,7 @@ engine:
         - type: ReplaceText
           substitutions:
             - text: "APP_NAME"
-              with: 'prova'
+              with: "#workloadResourceName"
             - text: "##DB_PARAMS"
               with:  |
                 'datasource:
