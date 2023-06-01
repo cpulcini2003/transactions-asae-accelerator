@@ -115,6 +115,8 @@ engine:
           substitutions:
             - text: "APP_NAME"
               with: "#workloadResourceName"
+            - text: "PROFILE_NAME"
+              with: "#workloadResourceName"
             - text: "##DB_PARAMS"
               with:  |
                 'datasource:
