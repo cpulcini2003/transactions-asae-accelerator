@@ -3,7 +3,7 @@ accelerator:
   description: Transactions Spring Restful API supported by in memory H2 or persistent PostgreSQL database.
   iconUrl: https://blogs.vmware.com/wp-content/uploads/2022/02/tap.png
   tags:
-    - Tanzu TEAM
+    - Tanzu_TEAM
     - Transactions
     - MoneyApp
     - PostgreSQL
